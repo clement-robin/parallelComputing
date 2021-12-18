@@ -2,14 +2,30 @@
 
 int main()
 {
-    int n = 3, m=10;
+    int n = 300;
     Matrice A;
     init_matrice(&A, n);
-    print_matrice(A);
+    int i;
+    double timeSeq = 0.0;
+    double timePara = 0.0;
+    //print_matrice(A);
 
-    calcul_valeurPropre(A,m);
+   
+    timeSeq = calcul_valeurPropre(A);
+    printf("%f secondes\n",timeSeq);
 
-    calcul_valeurProprePara(A,m);
+    timePara = calcul_valeurProprePara(A,2);
+    printf("Temps para pour 2 threads : %f secondes\n",timePara);
+
+    timePara = calcul_valeurProprePara(A,4);
+    printf("Temps para pour 4 threads : %f secondes\n",timePara);
+
+    /*for (i = 0; i < 16; i++)
+    {
+        timePara += calcul_valeurProprePara(A,i+2);
+        printf("Temps para pour %d threads : %f secondes\n",i+2,timePara);
+        i++;
+    }*/
 
     return 0;
 }
