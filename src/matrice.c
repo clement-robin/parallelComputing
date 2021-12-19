@@ -5,11 +5,11 @@ void init_matrice(Matrice *matrice, int n)
     int i,j;
 
     matrice->n = n;
-    matrice->tabMatrice = (float**)malloc(n*sizeof(float *));;
+    matrice->tabMatrice = (double**)malloc(n*sizeof(double *));;
 
     for (i = 0; i < n; i++)
     {   
-        matrice->tabMatrice[i] = (float *)calloc(n,sizeof(float));
+        matrice->tabMatrice[i] = (double *)calloc(n,sizeof(double));
         for (j = 0; j < n; j++)
         {
             matrice->tabMatrice[i][j] = i+j;
@@ -32,11 +32,12 @@ void print_matrice(Matrice matrice)
     }
 }
 
-float algo_puissanceItere(Matrice A, float *v, int n){
+double algo_puissanceItere(Matrice A, double *v, int n){
     
     int i,j,c = 0;
-    float vk[n],ak,e[n],emax;
+    double vk[n],ak,e[n],emax;
 
+    //for (c = 0; c < 50; c++) { // JUSQU'A CONVERGENCE
     do { // Convergence
 
         // Creation de vk
@@ -46,7 +47,7 @@ float algo_puissanceItere(Matrice A, float *v, int n){
             for (j = 0; j < n; j++)
             {
                 vk[i] = vk[i] + A.tabMatrice[i][j]*v[j];
-            }
+            }   
             
         }
 
@@ -92,10 +93,10 @@ float algo_puissanceItere(Matrice A, float *v, int n){
         }
     }
     while (emax>0.001);
-
-    /*printf("\nValeur propre max : %f\t",ak);
-    printf("\n");
-    printf("\nVecteur propre max :\n");
+    /*printf("\n Emax : %f\t\n",emax);
+    printf("\nValeur propre max : %f\t",ak);
+    printf("\n");*/
+    /*printf("\nVecteur propre max :\n");
     for(i=0; i<A.n; i++)
     {
         printf("%f\t",vk[i]);
@@ -107,7 +108,7 @@ float algo_puissanceItere(Matrice A, float *v, int n){
 
 double calcul_valeurPropre(Matrice A){
 
-    float v[A.n],vprope;
+    double v[A.n],vprope;
     int i;
     v[0] = 1;
     for (i = 1; i < A.n; i++)
@@ -122,12 +123,12 @@ double calcul_valeurPropre(Matrice A){
     return end-start;
 }
 
-float algo_puissanceIterePara(Matrice A, float *v, int n, int num_th){
+double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th){
 
     int i,j,c = 0;
-    float vk[n],ak,e[n],emax;
+    double vk[n],ak,e[n],emax;
 
-    //for (c = 0; c < m; c++) { // JUSQU'A CONVERGENCE
+    //for (c = 0; c < 50; c++) { // JUSQU'A CONVERGENCE
     do {
         // Creation de vk
         #pragma omp parallel for schedule(static,n/num_th) num_threads(num_th)
@@ -154,7 +155,6 @@ float algo_puissanceIterePara(Matrice A, float *v, int n, int num_th){
                     ak=vk[j];
                     }
                 }
-
             }   
         }
             
@@ -189,14 +189,14 @@ float algo_puissanceIterePara(Matrice A, float *v, int n, int num_th){
                 {
                     ak=fabs(vk[j]);
                 }
-            }
+           }
         }   
     }
     while (emax>0.001);
-
-    /*printf("\nValeur propre max : %f\t",ak);
-    printf("\n");
-    printf("\nVecteur propre max :\n");
+    /*printf("\n Emax : %f\t\n",emax);
+    printf("\nValeur propre max : %f\t",ak);
+    printf("\n");*/
+    /*printf("\nVecteur propre max :\n");
     for(i=0; i<A.n; i++)
     {
         printf("%f\t",vk[i]);
@@ -208,7 +208,7 @@ float algo_puissanceIterePara(Matrice A, float *v, int n, int num_th){
 
 double calcul_valeurProprePara(Matrice A, int num_th){
 
-    float v[A.n],vprope;
+    double v[A.n],vprope;
     int i;
     v[0] = 1;
     for (i = 1; i < A.n; i++)
