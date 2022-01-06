@@ -2,19 +2,18 @@
 
 int main()
 {
-    int n = 45000;
+    int n = 4;
     Matrice A;
     init_matrice(&A, n);
-    int i;
+    //int i;
     double timeSeq = 0.0;
     double timePara = 0.0;
     //print_matrice(A);
-
    
-    //timeSeq = calcul_valeurPropre(A);
-    //printf("%f secondes\n",timeSeq);
+    timeSeq = calcul_valeurPropre(A);
     printf("%f\n",timeSeq);
-
+    
+    /*
     for (i = 10; i < 16; i++)
     {
         timePara = calcul_valeurProprePara(A,i+2);
@@ -23,6 +22,7 @@ int main()
         printf("%f\n",timePara);
         i++;
     }
+    */
 
     return 0;
 }

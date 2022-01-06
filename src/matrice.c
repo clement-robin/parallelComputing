@@ -12,9 +12,30 @@ void init_matrice(Matrice *matrice, int n)
         matrice->tabMatrice[i] = (double *)calloc(n,sizeof(double));
         for (j = 0; j < n; j++)
         {
+            /*
             matrice->tabMatrice[i][j] = i+j;
+            printf("A[%d][%d]=", i,j);
+            scanf("%f",&A[i][j]);
+            */
         }
     }
+    
+    matrice->tabMatrice[0][0] = -6;
+    matrice->tabMatrice[0][1] = 4;
+    matrice->tabMatrice[0][2] = 45;
+    matrice->tabMatrice[0][3] = -14;
+    matrice->tabMatrice[1][0] = -14;
+    matrice->tabMatrice[1][1] = 51;
+    matrice->tabMatrice[1][2] = -25;
+    matrice->tabMatrice[1][3] = 524;
+    matrice->tabMatrice[2][0] = 144;
+    matrice->tabMatrice[2][1] = -24;
+    matrice->tabMatrice[2][2] = 24;
+    matrice->tabMatrice[2][3] = 142;
+    matrice->tabMatrice[3][0] = -214;
+    matrice->tabMatrice[3][1] = 452;
+    matrice->tabMatrice[3][2] = 1421;
+    matrice->tabMatrice[3][3] = -45;
 }
 
 void print_matrice(Matrice matrice)
@@ -82,20 +103,20 @@ double algo_puissanceItere(Matrice A, double *v, int n){
             }  
         }
 
-        // Calcul de ak
-        ak=fabs(vk[0]);
+        ak=vk[0];
         for(j=1; j<n; j++)
         {
             if((fabs(vk[j]))>ak)
             {
-                ak=fabs(vk[j]);
-            } 
+                ak=vk[j];
+            }
         }
+         
     }
     while (emax>0.001);
-    /*printf("\n Emax : %f\t\n",emax);
+    printf("\n Emax : %f\t\n",emax);
     printf("\nValeur propre max : %f\t",ak);
-    printf("\n");*/
+    printf("\n");
     /*printf("\nVecteur propre max :\n");
     for(i=0; i<A.n; i++)
     {
@@ -187,15 +208,15 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th){
             {
                 if((fabs(vk[j]))>ak)
                 {
-                    ak=fabs(vk[j]);
+                    ak=vk[j];
                 }
            }
         }   
     }
     while (emax>0.001);
-    /*printf("\n Emax : %f\t\n",emax);
+    //printf("\n Emax : %f\t\n",emax);
     printf("\nValeur propre max : %f\t",ak);
-    printf("\n");*/
+    printf("\n");
     /*printf("\nVecteur propre max :\n");
     for(i=0; i<A.n; i++)
     {
