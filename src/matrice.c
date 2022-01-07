@@ -1,5 +1,12 @@
 #include "matrice.h"
 
+/**
+ * La fonction init_matrice permet d'initialiser une matrice carre de taille n donnee en parametre
+ * La fonction alloue la memoire
+ * 
+ * @param matrice matrice que l'on souhaite initialiser
+ * @param n taille de la matrice que l'on souhaite initialiser
+ */
 void init_matrice(Matrice *matrice, int n)
 {
     int i,j;
@@ -38,6 +45,12 @@ void init_matrice(Matrice *matrice, int n)
     matrice->tabMatrice[3][3] = -45;
 }
 
+/**
+ * La fonction print_matrice permet d'afficher la matrice de la maniere suivante :
+ *  [ 1 2]
+ *  [ 3 4]
+ * @param matrice matrice que l'on souhaite afficher
+ */
 void print_matrice(Matrice matrice)
 {
     printf("\nMatrice\n");
