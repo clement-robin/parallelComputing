@@ -2,12 +2,13 @@ CC=gcc
 CFLAGS= -Wall -fopenmp
 EXE=para
 DOSSIER=src
-HEADERS=$(DOSSIER)/main.h $(DOSSIER)/matrice.h
-PRECOMP=$(DOSSIER)/main.o $(DOSSIER)/matrice.o	
+MAIN=$(DOSSIER)/main.c
+HEADERS=$(DOSSIER)/matrice.h
+PRECOMP=$(DOSSIER)/matrice.o	
 
 all: $(PRECOMP)
 	rm -f $(EXE)
-	$(CC) $(CFLAGS) $(PRECOMP) -o $(EXE)
+	$(CC) $(CFLAGS) $(MAIN) $(PRECOMP) -o $(EXE)
 
 exe: $(PRECOMP)
 	clear
