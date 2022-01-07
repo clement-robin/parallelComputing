@@ -1,3 +1,4 @@
-# parallelComputing
+# ParallelComputing
 
-Projet de programmation parallèle et distribuée (IATIC4-ISTY) - Méthodes des puissances
+Projet de programmation parallèle et distribuée (IATIC4-ISTY)  avec la méthodes des puissances
+
