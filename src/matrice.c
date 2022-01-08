@@ -2,11 +2,12 @@
 
 /**
  * La fonction init_matrice permet d'initialiser une matrice carre de taille n donnee en parametre
- * La fonction alloue la memoire
+ * La fonction alloue la memoire dynamiquement en fonction de la taille souhaiter
  * 
  * @param matrice matrice que l'on souhaite initialiser
  * @param n taille de la matrice que l'on souhaite initialiser
  */
+
 void init_matrice(Matrice *matrice, int n)
 {
     int i,j;
@@ -19,15 +20,13 @@ void init_matrice(Matrice *matrice, int n)
         matrice->tabMatrice[i] = (double *)calloc(n,sizeof(double));
         for (j = 0; j < n; j++)
         {
-            /*
-            matrice->tabMatrice[i][j] = i+j;
+            //matrice->tabMatrice[i][j] = i+j;
             printf("A[%d][%d]=", i,j);
-            scanf("%f",&A[i][j]);
-            */
+            scanf("%lf",&matrice->tabMatrice[i][j]);
         }
     }
     
-    matrice->tabMatrice[0][0] = -6;
+    /*matrice->tabMatrice[0][0] = -6;
     matrice->tabMatrice[0][1] = 4;
     matrice->tabMatrice[0][2] = 45;
     matrice->tabMatrice[0][3] = -14;
@@ -42,13 +41,13 @@ void init_matrice(Matrice *matrice, int n)
     matrice->tabMatrice[3][0] = -214;
     matrice->tabMatrice[3][1] = 452;
     matrice->tabMatrice[3][2] = 1421;
-    matrice->tabMatrice[3][3] = -45;
+    matrice->tabMatrice[3][3] = -45;*/
 }
 
 /**
  * La fonction print_matrice permet d'afficher la matrice de la maniere suivante :
- *  [ 1 2]
- *  [ 3 4]
+ *  [ 1 2 ]
+ *  [ 3 4 ]
  * @param matrice matrice que l'on souhaite afficher
  */
 void print_matrice(Matrice matrice)
@@ -60,7 +59,7 @@ void print_matrice(Matrice matrice)
         printf("[");
         for (int j = 0; j < matrice.n; j++)
         {
-            printf(" %.3f ", matrice.tabMatrice[i][j]);
+            printf(" %.3lf ", matrice.tabMatrice[i][j]);
         }
         printf("]\n");
     }

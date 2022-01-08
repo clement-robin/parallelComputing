@@ -7,8 +7,8 @@ int main()
     init_matrice(&A, n);
     //int i;
     double timeSeq = 0.0;
-    double timePara = 0.0;
-    //print_matrice(A);
+    //double timePara = 0.0;
+    print_matrice(A);
    
     timeSeq = calcul_valeurPropre(A);
     printf("%f\n",timeSeq);
