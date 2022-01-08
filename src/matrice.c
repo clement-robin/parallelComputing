@@ -21,8 +21,8 @@ void init_matrice(Matrice *matrice, int n)
         for (j = 0; j < n; j++)
         {
             //matrice->tabMatrice[i][j] = i+j;
-            printf("A[%d][%d]=", i,j);
-            scanf("%lf",&matrice->tabMatrice[i][j]);
+            /*printf("A[%d][%d]=", i,j);
+            scanf("%lf",&matrice->tabMatrice[i][j]);*/
         }
     }
     
@@ -42,6 +42,27 @@ void init_matrice(Matrice *matrice, int n)
     matrice->tabMatrice[3][1] = 452;
     matrice->tabMatrice[3][2] = 1421;
     matrice->tabMatrice[3][3] = -45;*/
+}
+
+void init_val(Matrice *matrice, int rand){
+    
+    int i,j;
+
+    for (i = 0; i < matrice->n; i++)
+    {   
+        for (j = 0; j < matrice->n; j++)
+        {
+            if (rand == 1){
+                matrice->tabMatrice[i][j] = i+j;
+            }
+            else
+            {
+                printf("A[%d][%d]=", i,j);
+                scanf("%lf",&matrice->tabMatrice[i][j]);
+            }
+            
+        }
+    }
 }
 
 /**
@@ -65,7 +86,7 @@ void print_matrice(Matrice matrice)
     }
 }
 
-double algo_puissanceItere(Matrice A, double *v, int n){
+double algo_puissanceItere(Matrice A, double *v, int n, float conv){
     
     int i,j,c = 0;
     double vk[n],ak,e[n],emax;
@@ -81,7 +102,6 @@ double algo_puissanceItere(Matrice A, double *v, int n){
             {
                 vk[i] = vk[i] + A.tabMatrice[i][j]*v[j];
             }   
-            
         }
 
         // Init ak pour la premiere itération
@@ -107,39 +127,34 @@ double algo_puissanceItere(Matrice A, double *v, int n){
         }
 
         emax = e[0];
+        ak=vk[0];
         for(i=1; i<n; i++)
         {   
             if(e[i]>emax)
             {
                 emax=e[i];
-            }  
-        }
-
-        ak=vk[0];
-        for(j=1; j<n; j++)
-        {
-            if((fabs(vk[j]))>ak)
-            {
-                ak=vk[j];
             }
+            if((fabs(vk[i]))>ak)
+            {
+                ak=vk[i];
+            }
+        }     
+    }
+    while (emax>conv);
+
+    if (n<=10){
+        printf("\nVecteur propre max :\n");
+        for(i=0; i<A.n; i++)
+        {
+            printf("%lf\t",vk[i]);
         }
-         
+        printf("\n");
     }
-    while (emax>0.001);
-    printf("\n Emax : %f\t\n",emax);
-    printf("\nValeur propre max : %f\t",ak);
-    printf("\n");
-    /*printf("\nVecteur propre max :\n");
-    for(i=0; i<A.n; i++)
-    {
-        printf("%f\t",vk[i]);
-    }
-    printf("\n");*/
 
     return ak;
 }
 
-double calcul_valeurPropre(Matrice A){
+double calcul_valeurPropre(Matrice A, float conv){
 
     double v[A.n],vprope;
     int i;
@@ -151,19 +166,22 @@ double calcul_valeurPropre(Matrice A){
 
     double start,end;
     start = omp_get_wtime();
-    vprope = algo_puissanceItere(A,v,A.n);
+    vprope = algo_puissanceItere(A,v,A.n,conv);
     end = omp_get_wtime();
+    printf("\nValeur propre max : %lf\t",vprope);
+    printf("\n");
     return end-start;
 }
 
-double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th){
+double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float conv){
 
     int i,j,c = 0;
     double vk[n],ak,e[n],emax;
 
     //for (c = 0; c < 50; c++) { // JUSQU'A CONVERGENCE
     do {
-        // Creation de vk
+        
+        // Creation de vk (1)
         #pragma omp parallel for schedule(static,n/num_th) num_threads(num_th)
         for(i=0; i< n; i++)
         {
@@ -175,6 +193,7 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th){
             }
         }
 
+        // si premier tour de boucle , initialisation de la valeur propre
         if (c == 0)
         {      
             c++;
@@ -190,16 +209,19 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th){
                 }
             }   
         }
-            
+        
+        // (2)
         #pragma omp parallel for schedule(static,n/num_th) num_threads(num_th)
         for(j=0; j<n; j++)
         {
-            vk[j]=vk[j]*(1/ak); // Calcul du vecteur vk (vk = vk/ak)
+            vk[j] = vk[j]*(1/ak); // Calcul du vecteur vk (vk = vk/ak)
             e[j] = fabs(fabs(vk[j])-fabs(v[j])); // Calcul du taux d'erreur
-            v[j]=vk[j];
+            v[j] = vk[j];
         }
 
+        //(3)
         emax = e[0];
+        ak=vk[0];
         #pragma omp parallel for schedule(static,n/num_th) num_threads(num_th)
         for(i=1; i<n; i++)
         {   
@@ -208,38 +230,29 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th){
                 if(e[i]>emax)
                 {
                     emax=e[i];
-                }  
-            }
-        }
-
-        ak=fabs(vk[0]);
-        #pragma omp parallel for schedule(static,n/num_th) num_threads(num_th)
-        for(j=1; j<n; j++)
-        {
-            #pragma omp critical
-            {
-                if((fabs(vk[j]))>ak)
-                {
-                    ak=vk[j];
                 }
-           }
-        }   
+                if((fabs(vk[i]))>ak)
+                {
+                    ak=vk[i];
+                } 
+            }
+        }  
     }
-    while (emax>0.001);
-    //printf("\n Emax : %f\t\n",emax);
-    printf("\nValeur propre max : %f\t",ak);
-    printf("\n");
-    /*printf("\nVecteur propre max :\n");
-    for(i=0; i<A.n; i++)
-    {
-        printf("%f\t",vk[i]);
+    while (emax>conv);
+
+    if (n<=10){
+        printf("\nVecteur propre max :\n");
+        for(i=0; i<A.n; i++)
+        {
+            printf("%lf\t",vk[i]);
+        }
+        printf("\n");
     }
-    printf("\n");*/
 
     return ak;
 }
 
-double calcul_valeurProprePara(Matrice A, int num_th){
+double calcul_valeurProprePara(Matrice A, int num_th, float conv){
 
     double v[A.n],vprope;
     int i;
@@ -251,7 +264,9 @@ double calcul_valeurProprePara(Matrice A, int num_th){
 
     double start,end;
     start = omp_get_wtime();
-    vprope = algo_puissanceIterePara(A,v,A.n,num_th);
+    vprope = algo_puissanceIterePara(A,v,A.n,num_th,conv);
     end = omp_get_wtime();
+    printf("\nValeur propre max : %lf\t",vprope);
+    printf("\n");
     return end-start;
 }
