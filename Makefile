@@ -9,10 +9,9 @@ PRECOMP=$(DOSSIER)/matrice.o
 all: $(PRECOMP)
 	rm -f $(EXE)
 	$(CC) $(CFLAGS) $(MAIN) $(PRECOMP) -o $(EXE)
-
-exe: $(PRECOMP)
 	clear
 	./$(EXE)
+
 
 %.o: %.c $(HEADERS)
 	$(CC) $(CFLAGS) -c -o $@ $<
