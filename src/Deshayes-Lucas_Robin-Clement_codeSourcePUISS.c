@@ -194,7 +194,7 @@ void print_matrice(Matrice matrice)
 double algo_puissanceItere(Matrice A, double *v, int n, float conv){
     
     int i,j,c = 0;
-    double vk[n],ak,e[n],emax;
+    double vk[n],ak,vconver[n],convermax;
 
     do { 
 
@@ -226,18 +226,18 @@ double algo_puissanceItere(Matrice A, double *v, int n, float conv){
         for(j=0; j<n; j++)
         {
             vk[j]=vk[j]/ak; // Calcul de vk le vecteur propre
-            e[j] = fabs(fabs(vk[j])-fabs(v[j])); // Calcul du taux d'erreur
+            vconver[j] = fabs(fabs(vk[j])-fabs(v[j])); // Calcul du taux d'erreur
             v[j]=vk[j]; // Sauvegarde du vecteur vk pour la prochaine itération
         }
 
         // Calcul de la valeur propre avec fabs (valeur absolue) du vecteur vk
-        emax = e[0];
+        convermax = vconver[0];
         ak=vk[0];
         for(i=1; i<n; i++)
         {   
-            if(e[i]>emax)
+            if(vconver[i]>convermax)
             {
-                emax=e[i];
+                convermax=vconver[i];
             }
             if((fabs(vk[i]))>ak)
             {
@@ -245,20 +245,20 @@ double algo_puissanceItere(Matrice A, double *v, int n, float conv){
             }
         }     
     }
-    while (emax>conv);
+    while (convermax>conv);
 
     // Factorisation du vecteur afin que le vecteur lu soit plus simple et compréhensible
-    emax=vk[0];
+    convermax=vk[0];
     for (i = 0; i < n; i++)
     {
-        if (fabs(emax)<fabs(vk[i]))
+        if (fabs(convermax)<fabs(vk[i]))
         {
-            emax = vk[i];
+            convermax = vk[i];
         }
     }
     for (i = 0; i < n; i++)
     {
-        vk[i]=vk[i]/emax;
+        vk[i]=vk[i]/convermax;
     }
     
     // Affichage du vecteur propre si la taille de matrice est inférieur à 10
@@ -310,7 +310,7 @@ double calcul_valeurPropre(Matrice A, float conv){
 double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float conv){
 
     int i,j,c = 0;
-    double vk[n],ak,e[n],emax;
+    double vk[n],ak,vconver[n],convermax;
 
     do {
         
@@ -348,21 +348,21 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float co
         for(j=0; j<n; j++)
         {
             vk[j]=vk[j]/ak; // Calcul de vk le vecteur propre
-            e[j]=fabs(fabs(vk[j])-fabs(v[j])); // Calcul du taux d'erreur
+            vconver[j]=fabs(fabs(vk[j])-fabs(v[j])); // Calcul du taux d'erreur
             v[j]=vk[j]; // Sauvegarde du vecteur vk pour la prochaine itération
         }
 
         // Calcul de la valeur propre avec fabs (valeur absolue) du vecteur vk
-        emax = e[0];
+        convermax = vconver[0];
         ak=vk[0];
         #pragma omp parallel for schedule(static,n/num_th) num_threads(num_th)
         for(i=1; i<n; i++)
         {   
             #pragma omp critical
             {
-                if(e[i]>emax)
+                if(vconver[i]>convermax)
                 {
-                    emax=e[i];
+                    convermax=vconver[i];
                 }
                 if((fabs(vk[i]))>ak)
                 {
@@ -371,20 +371,20 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float co
             }
         }  
     }
-    while (emax>conv);
+    while (convermax>conv);
 
     // Factorisation du vecteur afin que le vecteur lu soit plus simple et compréhensible
-    emax=vk[0];
+    convermax=vk[0];
     for (i = 0; i < n; i++)
     {
-        if (fabs(emax)<fabs(vk[i]))
+        if (fabs(convermax)<fabs(vk[i]))
         {
-            emax = vk[i];
+            convermax = vk[i];
         }
     }
     for (i = 0; i < n; i++)
     {
-        vk[i]=vk[i]/emax;
+        vk[i]=vk[i]/convermax;
     }
 
     // Affichage du vecteur propre si la taille de matrice est inférieur à 10
