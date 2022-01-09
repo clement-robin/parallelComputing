@@ -37,7 +37,7 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float co
 double calcul_valeurProprePara(Matrice A, int num_th, float conv);
 
 /**
- * fonction main du programme
+ * Fonction main du programme
  */
 int main()
 {   
@@ -95,11 +95,9 @@ int main()
     return 0;
 }
 
-
-
 /**
- * La fonction init_matrice permet d'initialiser une matrice carre de taille n donnee en parametre
- * La fonction alloue la memoire dynamiquement en fonction de la taille souhaiter
+ * La fonction init_matrice permet d'initialiser une matrice carre de taille n donnée en paramètre
+ * La fonction alloue la mémoire dynamiquement en fonction de la taille souhaiter
  * 
  * @param matrice matrice que l'on souhaite initialiser
  * @param n taille de la matrice que l'on souhaite initialiser
@@ -118,7 +116,7 @@ void init_matrice(Matrice *matrice, int n)
 }
 
 /**
- * La fonction init_val permet d'initialiser une matrice carre de taille n donnee en parametre
+ * La fonction init_val permet d'initialiser une matrice carre de taille n donnée en paramètre
  * La fonction affecte des valeurs double dans la matrice
  * 
  * @param matrice matrice que l'on souhaite initialiser
@@ -148,9 +146,9 @@ void init_val(Matrice *matrice, int rand){
 }
 
 /**
- * La fonction suppr_matrice permet de liberer l'espace memoire allouer pour la matrice
+ * La fonction suppr_matrice permet de libérer l'espace mémoire alloué pour la matrice
  * 
- * @param matrice matrice que l'on souhaite liberer
+ * @param matrice matrice que l'on souhaite libérer
  */
 void suppr_matrice(Matrice *matrice){
 
@@ -165,8 +163,8 @@ void suppr_matrice(Matrice *matrice){
 }
 
 /**
- * La fonction print_matrice permet d'afficher la matrice si la taille de la matrice est inferieur a 10
- *  Affiche de la maniere suivante :
+ * La fonction print_matrice permet d'afficher la matrice si la taille de la matrice est inférieur a 10
+ *  Affiche de la manière suivante :
  *  [ 1 2 ]
  *  [ 3 4 ]
  * @param matrice matrice que l'on souhaite afficher
@@ -187,11 +185,11 @@ void print_matrice(Matrice matrice)
 }
 
 /**
- * Algorithme de puissance itérée fait en sequentielle pour calculer la valeur propre d'un matrice et rretourne la valeur propre
+ * Algorithme de puissance itérée fait en séquentielle pour calculer la valeur propre d'un matrice et retourne la valeur propre
  * @param A Matrice dont l'on souhaite calculer la valeur propre
- * @param v Vecteur initialiser (1 a l'indice 0,puis que des 0) afin de le faire converger vers le vecteurs propre associé a la matrice
+ * @param v Vecteur initialiser (1 a l'indice 0,puis que des 0) afin de le faire converger vers le vecteur propre associé a la matrice
  * @param n Taille de la matrice
- * @param conv Convergence donnée en parametre par l'utilisateur ex: si taux voulu est de 0.1% alors donnée en parametre la valeur 0.01
+ * @param conv Convergence donnée en parametre par l'utilisateur ex: si le taux d'erreur voulu est de 0.1% alors donnée en paramètre la valeur 0.001
  */
 double algo_puissanceItere(Matrice A, double *v, int n, float conv){
     
@@ -206,7 +204,7 @@ double algo_puissanceItere(Matrice A, double *v, int n, float conv){
             vk[i]=0;
             for (j = 0; j < n; j++)
             {
-                vk[i] = vk[i] + A.tabMatrice[i][j]*v[j];
+                vk[i] = vk[i] + A.tabMatrice[i][j]*v[j]; // Produit matrice vecteur
             }   
         }
 
@@ -224,14 +222,15 @@ double algo_puissanceItere(Matrice A, double *v, int n, float conv){
             }
         }
         
-        // Calcul de vk le vecteur propre, e qui represente la convergence entre le ve  v
+        // Calcul de vk le vecteur propre, calcul de e le taux d'erreur et sauvegarde du vecteur vk pour la prochaine itération
         for(j=0; j<n; j++)
         {
-            vk[j]=vk[j]/ak;
+            vk[j]=vk[j]/ak; // Calcul de vk le vecteur propre
             e[j] = fabs(fabs(vk[j])-fabs(v[j])); // Calcul du taux d'erreur
-            v[j]=vk[j];
+            v[j]=vk[j]; // Sauvegarde du vecteur vk pour la prochaine itération
         }
 
+        // Calcul de la valeur propre avec fabs (valeur absolue) du vecteur vk
         emax = e[0];
         ak=vk[0];
         for(i=1; i<n; i++)
@@ -248,6 +247,7 @@ double algo_puissanceItere(Matrice A, double *v, int n, float conv){
     }
     while (emax>conv);
 
+    // Factorisation du vecteur afin que le vecteur lu soit plus simple et compréhensible
     emax=vk[0];
     for (i = 0; i < n; i++)
     {
@@ -261,6 +261,7 @@ double algo_puissanceItere(Matrice A, double *v, int n, float conv){
         vk[i]=vk[i]/emax;
     }
     
+    // Affichage du vecteur propre si la taille de matrice est inférieur à 10
     if (n<=10){
         printf("\nVecteur propre max :\n");
         for(i=0; i<A.n; i++)
@@ -274,10 +275,10 @@ double algo_puissanceItere(Matrice A, double *v, int n, float conv){
 }
 
 /**
- * Fonction auxilaire pour lancer l'Algorithme de puissance itérée fait en sequentielle
- * Cette fonction initialise toutes les variables et chronometre le temps d'execution
+ * Fonction auxiliaire pour lancer l'Algorithme de puissance itérée fait en séquentielle
+ * Cette fonction initialise toutes les variables et chronomètre le temps d'exécution
  * @param A Matrice dont l'on souhaite calculer la valeur propre
- * @param conv Convergence donnée en parametre par l'utilisateur ex: si taux voulu est de 0.1% alors donnée en parametre la valeur 0.01
+ * @param conv Convergence donnée en paramètre par l'utilisateur ex: si le taux d'erreur voulu est de 0.1% alors donnée en paramètre la valeur 0.001
  */
 double calcul_valeurPropre(Matrice A, float conv){
 
@@ -299,22 +300,21 @@ double calcul_valeurPropre(Matrice A, float conv){
 }
 
 /**
- * Algorithme de puissance itérée fait en parallele pour calculer la valeur propre d'un matrice et rretourne la valeur propre
+ * Algorithme de puissance itérée fait en parallèle pour calculer la valeur propre d'un matrice et rretourne la valeur propre
  * @param A Matrice dont l'on souhaite calculer la valeur propre
  * @param v Vecteur initialiser (1 a l'indice 0,puis que des 0) afin de le faire converger vers le vecteurs propre associé a la matrice
  * @param n Taille de la matrice
- * @param num_th Nombre de thread utiliser dans l'algorithme
- * @param conv Convergence donnée en parametre par l'utilisateur ex: si taux voulu est de 0.1% alors donnée en parametre la valeur 0.01
+ * @param num_th Nombre de threads utiliser dans l'algorithme
+ * @param conv Convergence donnée en paramètre par l'utilisateur ex: si le taux d'erreur voulu est de 0.1% alors donnée en paramètre la valeur 0.001
  */
 double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float conv){
 
     int i,j,c = 0;
     double vk[n],ak,e[n],emax;
 
-    //for (c = 0; c < 50; c++) { // JUSQU'A CONVERGENCE
     do {
         
-        // Creation de vk (1)
+        // Creation de Avk-1
         #pragma omp parallel for schedule(static,n/num_th) num_threads(num_th)
         for(i=0; i< n; i++)
         {
@@ -322,11 +322,11 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float co
             #pragma omp parallel for schedule(static,n/num_th) num_threads(num_th)
             for (j = 0; j < n; j++)
             {
-                vk[i] = vk[i] + A.tabMatrice[i][j]*v[j];
+                vk[i] = vk[i] + A.tabMatrice[i][j]*v[j]; // Produit matrice vecteur
             }
         }
 
-        // si premier tour de boucle , initialisation de la valeur propre
+        // Initialisation de ak pour la premiere itération du programme
         if (c == 0)
         {      
             c++;
@@ -343,16 +343,16 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float co
             }   
         }
         
-        // (2)
+         // Calcul de vk le vecteur propre, calcul de e le taux d'erreur et sauvegarde du vecteur vk pour la prochaine itération
         #pragma omp parallel for schedule(static,n/num_th) num_threads(num_th)
         for(j=0; j<n; j++)
         {
-            vk[j] = vk[j]*(1/ak); // Calcul du vecteur vk (vk = vk/ak)
-            e[j] = fabs(fabs(vk[j])-fabs(v[j])); // Calcul du taux d'erreur
-            v[j] = vk[j];
+            vk[j]=vk[j]/ak; // Calcul de vk le vecteur propre
+            e[j]=fabs(fabs(vk[j])-fabs(v[j])); // Calcul du taux d'erreur
+            v[j]=vk[j]; // Sauvegarde du vecteur vk pour la prochaine itération
         }
 
-        //(3)
+        // Calcul de la valeur propre avec fabs (valeur absolue) du vecteur vk
         emax = e[0];
         ak=vk[0];
         #pragma omp parallel for schedule(static,n/num_th) num_threads(num_th)
@@ -373,6 +373,21 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float co
     }
     while (emax>conv);
 
+    // Factorisation du vecteur afin que le vecteur lu soit plus simple et compréhensible
+    emax=vk[0];
+    for (i = 0; i < n; i++)
+    {
+        if (fabs(emax)<fabs(vk[i]))
+        {
+            emax = vk[i];
+        }
+    }
+    for (i = 0; i < n; i++)
+    {
+        vk[i]=vk[i]/emax;
+    }
+
+    // Affichage du vecteur propre si la taille de matrice est inférieur à 10
     if (n<=10){
         printf("\nVecteur propre max :\n");
         for(i=0; i<A.n; i++)
@@ -386,11 +401,11 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float co
 }
 
 /**
- * Fonction auxilaire pour lancer l'Algorithme de puissance itérée fait en parallele
- * Cette fonction initialise toutes les variables et chronometre le temps d'execution
+ * Fonction auxiliaire pour lancer l'Algorithme de puissance itérée fait en parallèle
+ * Cette fonction initialise toutes les variables et chronomètre le temps d'exécution
  * @param A Matrice dont l'on souhaite calculer la valeur propre
- * @param num_th Nombre de thread utiliser dans l'algorithme
- * @param conv Convergence donnée en parametre par l'utilisateur ex: si taux voulu est de 0.1% alors donnée en parametre la valeur 0.01
+ * @param num_th Nombre de threads utiliser dans l'algorithme
+ * @param conv Convergence donnée en paramètre par l'utilisateur ex: si le taux d'erreur voulu est de 0.1% alors donnée en parametre la valeur 0.001
  */
 double calcul_valeurProprePara(Matrice A, int num_th, float conv){
 
