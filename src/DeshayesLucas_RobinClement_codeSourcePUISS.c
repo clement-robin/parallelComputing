@@ -18,6 +18,93 @@ struct Matrice
     double **tabMatrice;
 };
 
+/** Prototypes de fonctions **/
+
+void init_matrice(Matrice *matrice, int parN);
+
+void suppr_matrice(Matrice *matrice);
+
+void init_val(Matrice *matrice, int rand);
+
+void print_matrice(Matrice matrice);
+
+double algo_puissanceItere(Matrice A, double *v, int n, float conv);
+
+double calcul_valeurPropre(Matrice A, float conv);
+
+double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float conv);
+
+double calcul_valeurProprePara(Matrice A, int num_th, float conv);
+
+/**
+ * fonction main du programme
+ */
+int main()
+{   
+    int n,i;
+    int rand = 1;
+    int ex;
+    int th;
+    float conv;
+    Matrice A;
+
+    double timeExec = 0.0;
+
+    printf("Tapez la taille de la matrice carré souhaitez\n");
+    scanf("%d",&n);
+    init_matrice(&A, n);
+
+    do {
+
+        printf("Voulez vous tapez les valeurs ? (0 : oui, 1 : non)\n");
+        scanf("%d",&rand);
+        init_val(&A,rand);
+        printf("Taux de convergence souhaiter\n");
+        scanf("%f",&conv);
+        printf("Execution souhaiter (0 : seq, 1 : para)\n");
+        scanf("%d",&ex);
+        
+        if (ex == 1)
+        {
+            printf("Nombre de Thread\n");
+            scanf("%d",&th);
+            if (n<=10)
+            {
+                print_matrice(A);
+            }
+            timeExec = calcul_valeurProprePara(A,th,conv);
+            printf("Temps d'execution de l'algo en parralele avec %d threads : %f (en s)\n\n\n\n",th,timeExec);
+        }
+        else
+        {
+            if (n<=10)
+            {
+                print_matrice(A);
+            }
+            timeExec = calcul_valeurPropre(A,conv);
+            printf("Temps d'execution de l'algo en sequentielle : %f (en s)\n\n\n\n",timeExec);
+        }
+        
+
+        /*for (i = 2; i < 18; i++)
+        {
+           timeExec = calcul_valeurProprePara(A,i,conv);
+           i++;
+           printf("%f\n",timeExec);
+        }   */
+       
+        suppr_matrice(&A);
+        printf("Tapez la taille de la matrice carré souhaitez (-1 si vous voulez arreter)\n");
+        scanf("%d",&n);
+        init_matrice(&A, n);
+    }
+    while (n != -1);
+
+    return 0;
+}
+
+
+
 /**
  * La fonction init_matrice permet d'initialiser une matrice carre de taille n donnee en parametre
  * La fonction alloue la memoire dynamiquement en fonction de la taille souhaiter
@@ -331,71 +418,4 @@ double calcul_valeurProprePara(Matrice A, int num_th, float conv){
     //printf("\nValeur propre max : %lf\t",vprope);
     //printf("\n");
     return end-start;
-}
-
-/**
- * fonction main du programme
- */
-int main()
-{   
-    int n,i;
-    int rand = 1;
-    int ex;
-    int th;
-    float conv;
-    Matrice A;
-
-    double timeExec = 0.0;
-
-    printf("Tapez la taille de la matrice carré souhaitez\n");
-    scanf("%d",&n);
-    init_matrice(&A, n);
-
-    do {
-
-        printf("Voulez vous tapez les valeurs ? (0 : oui, 1 : non)\n");
-        scanf("%d",&rand);
-        init_val(&A,rand);
-        printf("Taux de convergence souhaiter\n");
-        scanf("%f",&conv);
-        printf("Execution souhaiter (0 : seq, 1 : para)\n");
-        scanf("%d",&ex);
-        
-        if (ex == 1)
-        {
-            printf("Nombre de Thread\n");
-            scanf("%d",&th);
-            if (n<=10)
-            {
-                print_matrice(A);
-            }
-            timeExec = calcul_valeurProprePara(A,th,conv);
-            printf("Temps d'execution de l'algo en parralele avec %d threads : %f (en s)\n\n\n\n",th,timeExec);
-        }
-        else
-        {
-            if (n<=10)
-            {
-                print_matrice(A);
-            }
-            timeExec = calcul_valeurPropre(A,conv);
-            printf("Temps d'execution de l'algo en sequentielle : %f (en s)\n\n\n\n",timeExec);
-        }
-        
-
-        /*for (i = 2; i < 18; i++)
-        {
-           timeExec = calcul_valeurProprePara(A,i,conv);
-           i++;
-           printf("%f\n",timeExec);
-        }   */
-       
-        suppr_matrice(&A);
-        printf("Tapez la taille de la matrice carré souhaitez (-1 si vous voulez arreter)\n");
-        scanf("%d",&n);
-        init_matrice(&A, n);
-    }
-    while (n != -1);
-
-    return 0;
 }
