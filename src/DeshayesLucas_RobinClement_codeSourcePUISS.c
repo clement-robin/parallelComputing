@@ -41,7 +41,7 @@ double calcul_valeurProprePara(Matrice A, int num_th, float conv);
  */
 int main()
 {   
-    int n,i;
+    int n;
     int rand = 1;
     int ex;
     int th;
@@ -84,14 +84,6 @@ int main()
             timeExec = calcul_valeurPropre(A,conv);
             printf("Temps d'execution de l'algo en sequentielle : %f (en s)\n\n\n\n",timeExec);
         }
-        
-
-        /*for (i = 2; i < 18; i++)
-        {
-           timeExec = calcul_valeurProprePara(A,i,conv);
-           i++;
-           printf("%f\n",timeExec);
-        }   */
        
         suppr_matrice(&A);
         printf("Tapez la taille de la matrice carré souhaitez (-1 si vous voulez arreter)\n");
@@ -415,7 +407,7 @@ double calcul_valeurProprePara(Matrice A, int num_th, float conv){
     start = omp_get_wtime();
     vprope = algo_puissanceIterePara(A,v,A.n,num_th,conv);
     end = omp_get_wtime();
-    //printf("\nValeur propre max : %lf\t",vprope);
-    //printf("\n");
+    printf("\nValeur propre max : %lf\t",vprope);
+    printf("\n");
     return end-start;
 }
