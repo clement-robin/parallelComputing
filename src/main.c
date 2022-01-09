@@ -2,8 +2,8 @@
 
 int main()
 {   
-    int n;
-    int rand;
+    int n,i;
+    int rand = 1;
     int ex;
     int th;
     float conv;
@@ -25,7 +25,6 @@ int main()
         printf("Execution souhaiter (0 : seq, 1 : para)\n");
         scanf("%d",&ex);
         
-        
         if (ex == 1)
         {
             printf("Nombre de Thread\n");
@@ -46,7 +45,16 @@ int main()
             timeExec = calcul_valeurPropre(A,conv);
             printf("Temps d'execution de l'algo en sequentielle : %f (en s)\n\n\n\n",timeExec);
         }
+        
 
+        /*for (i = 2; i < 18; i++)
+        {
+           timeExec = calcul_valeurProprePara(A,i,conv);
+           i++;
+           printf("%f\n",timeExec);
+        }   */
+       
+        suppr_matrice(&A);
         printf("Tapez la taille de la matrice carré souhaitez (-1 si vous voulez arreter)\n");
         scanf("%d",&n);
         init_matrice(&A, n);

@@ -13,6 +13,8 @@ struct Matrice
 
 void init_matrice(Matrice *matrice, int parN);
 
+void suppr_matrice(Matrice *matrice);
+
 void init_val(Matrice *matrice, int rand);
 
 void print_matrice(Matrice matrice);

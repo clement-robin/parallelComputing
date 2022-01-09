@@ -1,4 +1,22 @@
-#include "matrice.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <omp.h>
+
+
+/**
+ * Définition du type Matrice
+ * Une Matrice a deux données
+ * n : qui représente la taille de la Matrice
+ * tabMatrice : qui représente un tableau de double de double dimension
+ */
+typedef struct Matrice Matrice;
+
+struct Matrice
+{
+    int n;
+    double **tabMatrice;
+};
 
 /**
  * La fonction init_matrice permet d'initialiser une matrice carre de taille n donnee en parametre
@@ -7,7 +25,6 @@
  * @param matrice matrice que l'on souhaite initialiser
  * @param n taille de la matrice que l'on souhaite initialiser
  */
-
 void init_matrice(Matrice *matrice, int n)
 {
     int i;
@@ -21,6 +38,15 @@ void init_matrice(Matrice *matrice, int n)
     }
 }
 
+/**
+ * La fonction init_val permet d'initialiser une matrice carre de taille n donnee en parametre
+ * La fonction affecte des valeurs double dans la matrice
+ * 
+ * @param matrice matrice que l'on souhaite initialiser
+ * @param rand parametre afin de choisir ou non les valeurs, 
+ * si égal à 1 la matrice aura i+j dans chaque case
+ * sinon demande a l'utilisateur d'entré les valeurs
+ */
 void init_val(Matrice *matrice, int rand){
     
     int i,j;
@@ -42,6 +68,11 @@ void init_val(Matrice *matrice, int rand){
     }
 }
 
+/**
+ * La fonction suppr_matrice permet de liberer l'espace memoire allouer pour la matrice
+ * 
+ * @param matrice matrice que l'on souhaite liberer
+ */
 void suppr_matrice(Matrice *matrice){
 
     int i;
@@ -55,7 +86,8 @@ void suppr_matrice(Matrice *matrice){
 }
 
 /**
- * La fonction print_matrice permet d'afficher la matrice de la maniere suivante :
+ * La fonction print_matrice permet d'afficher la matrice si la taille de la matrice est inferieur a 10
+ *  Affiche de la maniere suivante :
  *  [ 1 2 ]
  *  [ 3 4 ]
  * @param matrice matrice que l'on souhaite afficher
@@ -75,6 +107,13 @@ void print_matrice(Matrice matrice)
     }
 }
 
+/**
+ * Algorithme de puissance itérée fait en sequentielle pour calculer la valeur propre d'un matrice et rretourne la valeur propre
+ * @param A Matrice dont l'on souhaite calculer la valeur propre
+ * @param v Vecteur initialiser (1 a l'indice 0,puis que des 0) afin de le faire converger vers le vecteurs propre associé a la matrice
+ * @param n Taille de la matrice
+ * @param conv Convergence donnée en parametre par l'utilisateur ex: si taux voulu est de 0.1% alors donnée en parametre la valeur 0.01
+ */
 double algo_puissanceItere(Matrice A, double *v, int n, float conv){
     
     int i,j,c = 0;
@@ -155,6 +194,12 @@ double algo_puissanceItere(Matrice A, double *v, int n, float conv){
     return ak;
 }
 
+/**
+ * Fonction auxilaire pour lancer l'Algorithme de puissance itérée fait en sequentielle
+ * Cette fonction initialise toutes les variables et chronometre le temps d'execution
+ * @param A Matrice dont l'on souhaite calculer la valeur propre
+ * @param conv Convergence donnée en parametre par l'utilisateur ex: si taux voulu est de 0.1% alors donnée en parametre la valeur 0.01
+ */
 double calcul_valeurPropre(Matrice A, float conv){
 
     double v[A.n],vprope;
@@ -174,6 +219,14 @@ double calcul_valeurPropre(Matrice A, float conv){
     return end-start;
 }
 
+/**
+ * Algorithme de puissance itérée fait en parallele pour calculer la valeur propre d'un matrice et rretourne la valeur propre
+ * @param A Matrice dont l'on souhaite calculer la valeur propre
+ * @param v Vecteur initialiser (1 a l'indice 0,puis que des 0) afin de le faire converger vers le vecteurs propre associé a la matrice
+ * @param n Taille de la matrice
+ * @param num_th Nombre de thread utiliser dans l'algorithme
+ * @param conv Convergence donnée en parametre par l'utilisateur ex: si taux voulu est de 0.1% alors donnée en parametre la valeur 0.01
+ */
 double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float conv){
 
     int i,j,c = 0;
@@ -253,7 +306,15 @@ double algo_puissanceIterePara(Matrice A, double *v, int n, int num_th, float co
     return ak;
 }
 
+/**
+ * Fonction auxilaire pour lancer l'Algorithme de puissance itérée fait en parallele
+ * Cette fonction initialise toutes les variables et chronometre le temps d'execution
+ * @param A Matrice dont l'on souhaite calculer la valeur propre
+ * @param num_th Nombre de thread utiliser dans l'algorithme
+ * @param conv Convergence donnée en parametre par l'utilisateur ex: si taux voulu est de 0.1% alors donnée en parametre la valeur 0.01
+ */
 double calcul_valeurProprePara(Matrice A, int num_th, float conv){
+
 
     double v[A.n],vprope;
     int i;
@@ -270,4 +331,71 @@ double calcul_valeurProprePara(Matrice A, int num_th, float conv){
     //printf("\nValeur propre max : %lf\t",vprope);
     //printf("\n");
     return end-start;
+}
+
+/**
+ * fonction main du programme
+ */
+int main()
+{   
+    int n,i;
+    int rand = 1;
+    int ex;
+    int th;
+    float conv;
+    Matrice A;
+
+    double timeExec = 0.0;
+
+    printf("Tapez la taille de la matrice carré souhaitez\n");
+    scanf("%d",&n);
+    init_matrice(&A, n);
+
+    do {
+
+        printf("Voulez vous tapez les valeurs ? (0 : oui, 1 : non)\n");
+        scanf("%d",&rand);
+        init_val(&A,rand);
+        printf("Taux de convergence souhaiter\n");
+        scanf("%f",&conv);
+        printf("Execution souhaiter (0 : seq, 1 : para)\n");
+        scanf("%d",&ex);
+        
+        if (ex == 1)
+        {
+            printf("Nombre de Thread\n");
+            scanf("%d",&th);
+            if (n<=10)
+            {
+                print_matrice(A);
+            }
+            timeExec = calcul_valeurProprePara(A,th,conv);
+            printf("Temps d'execution de l'algo en parralele avec %d threads : %f (en s)\n\n\n\n",th,timeExec);
+        }
+        else
+        {
+            if (n<=10)
+            {
+                print_matrice(A);
+            }
+            timeExec = calcul_valeurPropre(A,conv);
+            printf("Temps d'execution de l'algo en sequentielle : %f (en s)\n\n\n\n",timeExec);
+        }
+        
+
+        /*for (i = 2; i < 18; i++)
+        {
+           timeExec = calcul_valeurProprePara(A,i,conv);
+           i++;
+           printf("%f\n",timeExec);
+        }   */
+       
+        suppr_matrice(&A);
+        printf("Tapez la taille de la matrice carré souhaitez (-1 si vous voulez arreter)\n");
+        scanf("%d",&n);
+        init_matrice(&A, n);
+    }
+    while (n != -1);
+
+    return 0;
 }
